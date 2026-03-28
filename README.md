@@ -1,6 +1,6 @@
 # Claude Tools
 
-Built as a working demonstration for TLDR's first AI Engineer role. Two Claude Skills — prospect research and proposal generation — deployed on TLDR's stack (FastAPI, Railway), connected via n8n, accessible to non-technical users without code or engineering tickets. It's live at https://claude-tools-production.up.railway.app.
+Composable AI skill platform built on FastAPI, Railway, and Anthropic Claude. Two skills, prospect research and proposal generation, chained together so the structured output of one becomes the input of the next. Deployed and publicly accessible at https://claude-tools-production.up.railway.app.
 
 ## How to Use
 
