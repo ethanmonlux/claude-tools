@@ -94,8 +94,6 @@ Why: both skills duplicated the same API call, output cleaning, and error handli
 
 **Slack integration:** post brief directly to a sales channel when a rep requests it.
 
-**n8n integration:** live. Three workflows connect to these skills via HTTP node — a manual trigger for one-off research runs, a form trigger for automated research pipelines, and a full proposal pipeline (form → research → Code node → proposal → Discord). See docs/n8n/ for screenshots and setup.
-
 ## Running It
 
 See README.md for quick start.
