@@ -27,7 +27,7 @@ Severity ratings: **Blocker** | **Critical** | **Major** | **Minor** | **Chore**
 - [ ] **Batch research** — process a list of companies in one request
 - [ ] **Copy to clipboard** — on pitch email and subject line fields
 - [ ] **Channel fit scoring** — automatically match prospect to the best outreach channels; removes judgment call from the rep
-- [ ] **Error alerting** — Discord webhook on 5xx errors for immediate visibility
+- [ ] **Error alerting** — webhook alerting on 5xx errors for immediate visibility
 
 -----
 
@@ -46,7 +46,6 @@ Severity ratings: **Blocker** | **Critical** | **Major** | **Minor** | **Chore**
 ## Chore
 
 - [ ] **CI/CD GitHub Actions** — run pytest and ruff on every PR
-- [ ] **n8n Code node schema coupling** — pass data directly instead of reconstructing `ProspectSummary` in JS
 - [ ] **`.env.example` audit** — confirm all required and optional vars are documented
 - [ ] **Railway environment variable audit** — confirm production and staging parity
 - [ ] **Update docs** — document Redis as upgrade path for rate limiter in ARCHITECTURE.md
