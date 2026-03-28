@@ -17,7 +17,7 @@ Your output must be valid JSON matching this exact schema — no markdown, no ex
 
 {
   "pitch_email_body": "string (a complete, ready-to-send outreach email body, 150-300 words, personalized to the company)",
-  "recommended_approach": ["string", "string", "string (specific, actionable recommendations for how to approach this company — who to contact, what angle to lead with, what recent news or context to reference)"],
+  "recommended_approach": ["string", "string", "string (specific channels and placements to reach this company's audience — e.g. developer newsletter, technical blog, LinkedIn, conference sponsorship, podcast, community forum)"],
   "talking_points": ["string", "string", "string (3 tailored talking points for a sales call)"],
   "follow_up_hook": "string (a compelling hook for a follow-up email if the first pitch doesn't get a reply)"
 }
@@ -28,9 +28,9 @@ _MOCK_RESPONSE = json.dumps(
     {
         "pitch_email_body": "Hi TestCo team, we reach millions of engineers and technical decision-makers daily — exactly the audience your product is built for. I'd love to explore how we can get TestCo in front of them.",
         "recommended_approach": [
-            "Lead with their recent product launch",
-            "Target VP Engineering on LinkedIn",
-            "Reference their AI infrastructure investment",
+            "developer newsletter",
+            "technical blog",
+            "LinkedIn",
         ],
         "talking_points": [
             "TestCo's target buyer profile matches our audience exactly",
