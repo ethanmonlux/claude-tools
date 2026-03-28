@@ -58,8 +58,8 @@
 
     /* Proposal result styles */
     .proposal-email { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; margin-bottom: 4px; }
-    .newsletter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
-    .newsletter-tag { background: #e0e7ff; color: #3730a3; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+    .approach-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+    .approach-tag { background: #e0e7ff; color: #3730a3; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
     .hook-text { background: #fef3c7; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
   </style>
 </head>
@@ -155,7 +155,7 @@
       <div class="proposal-email" id="p-email"></div>
 
       <div class="section-label">Recommended Approach</div>
-      <div class="newsletter-tags" id="p-approach"></div>
+      <div class="approach-tags" id="p-approach"></div>
 
       <div class="section-label">Talking Points</div>
       <ul class="pain-list" id="p-talking-points"></ul>
@@ -366,7 +366,7 @@
       tags.innerHTML = "";
       d.recommended_approach.forEach(function(n) {
         var span = document.createElement("span");
-        span.className = "newsletter-tag";
+        span.className = "approach-tag";
         span.textContent = n;
         tags.appendChild(span);
       });
