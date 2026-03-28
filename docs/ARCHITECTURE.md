@@ -88,7 +88,7 @@ Why: both skills duplicated the same API call, output cleaning, and error handli
 
 **HubSpot write-back:** implemented — the skill automatically creates a note on the company record after generating the brief. Requires crm.objects.notes.write scope (paid HubSpot plan). The 403 on free accounts is a plan limitation, not a bug.
 
-**Proposal generator skill:** implemented — takes a prospect brief as input, searches the web for additional context, and outputs a draft sponsorship proposal with pitch email, newsletter suggestions, talking points, and a follow-up hook. This is the composability payoff — the output schema of the research skill becomes the input schema of the proposal skill.
+**Proposal generator tool:** implemented — takes a prospect brief as input, searches the web for additional context, and outputs a draft outreach proposal with pitch email, recommended approach, talking points, and a follow-up hook. This is the composability payoff — the output schema of the research tool becomes the input schema of the proposal tool.
 
 **Batch mode:** process a list of companies from a CSV or HubSpot list. Same skill, different trigger.
 

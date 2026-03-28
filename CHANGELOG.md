@@ -23,7 +23,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Two-tab frontend (Research + Proposal) served directly by FastAPI — no build pipeline
 - sessionStorage persistence — session data clears on tab close
 - CLAUDE_MODE=mock — skips Anthropic API entirely for local dev and staging
-- n8n pipeline — three workflows: manual test run, form-triggered research, form-triggered proposal
+- Composable workflow support — research output schema feeds directly into proposal tool input with no transformation layer
 - 26 tests covering auth, validation, happy path, and all failure modes
 - CLAUDE.md constraint document for Claude Code sessions
 - ARCHITECTURE.md with system diagram and design decisions
