@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Tools</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; line-height: 1.5; }
+    .container { max-width: 680px; margin: 48px auto; padding: 0 20px; }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    .subtitle { color: #666; margin-bottom: 32px; font-size: 15px; }
+
+    .card { background: #fff; border: 1px solid #e2e2e2; border-radius: 10px; padding: 28px; margin-bottom: 24px; }
+    label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 5px; color: #444; text-transform: uppercase; letter-spacing: 0.4px; }
+    input, textarea { width: 100%; padding: 10px 12px; border: 1px solid #d0d0d0; border-radius: 6px; font-size: 15px; font-family: inherit; margin-bottom: 18px; transition: border-color 0.15s; }
+    input:focus, textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    textarea { resize: vertical; min-height: 64px; }
+
+    .btn { background: #2563eb; color: #fff; border: none; padding: 12px 28px; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn:hover { background: #1d4ed8; }
+    .btn:disabled { background: #93c5fd; cursor: not-allowed; }
+
+    .hidden { display: none; }
+
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-ai { background: #fef3c7; color: #92400e; margin-bottom: 16px; }
+    .badge-high { background: #d1fae5; color: #065f46; }
+    .badge-medium { background: #fef9c3; color: #854d0e; }
+    .badge-low { background: #fee2e2; color: #991b1b; }
+
+    .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .result-company { font-size: 20px; font-weight: 700; }
+    .result-industry { color: #666; font-size: 14px; }
+    .result-size { color: #888; font-size: 13px; margin-bottom: 16px; }
+
+    .section-label { font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: 0.4px; margin: 18px 0 6px; }
+    .section-text { font-size: 15px; margin-bottom: 4px; }
+    .pain-list { list-style: none; padding: 0; }
+    .pain-list li { padding: 4px 0 4px 18px; position: relative; font-size: 15px; }
+    .pain-list li::before { content: "\2022"; position: absolute; left: 0; color: #2563eb; font-weight: bold; }
+    .subject-line { font-style: italic; background: #f0f4ff; padding: 8px 12px; border-radius: 6px; font-size: 15px; }
+
+    .status-banner { padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+    .status-error { background: #fee2e2; color: #991b1b; }
+    .status-degraded { background: #fef9c3; color: #854d0e; }
+
+    .loading-dots::after { content: ''; animation: dots 1.2s steps(4, end) infinite; }
+    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e2e2e2; }
+    .tab-btn { background: none; border: none; padding: 10px 20px; font-size: 15px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color 0.15s, border-color 0.15s; }
+    .tab-btn:hover { color: #444; }
+    .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Proposal result styles */
+    .proposal-email { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; margin-bottom: 4px; }
+    .newsletter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+    .newsletter-tag { background: #e0e7ff; color: #3730a3; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+    .hook-text { background: #fef3c7; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 4px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Claude Tools</h1>
+    <p class="subtitle">Research prospects and generate proposals.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('research')">Research</button>
+      <button class="tab-btn" onclick="switchTab('proposal')">Proposal</button>
+    </div>
+
+    <div id="tab-research" class="tab-panel active">
+
+    <div class="card">
+      <label for="apikey">API Key</label>
+      <input id="apikey" type="password" value="" placeholder="Enter API key" autocomplete="off">
+
+      <label for="company">Company Name</label>
+      <input id="company" type="text" placeholder="e.g. Vercel">
+
+      <label for="notes">Notes (optional)</label>
+      <textarea id="notes" placeholder="e.g. Focus on their AI initiatives"></textarea>
+
+      <button class="btn" id="btn">Research</button>
+    </div>
+
+    <div id="loading" class="card hidden">
+      <span class="loading-dots" style="font-size:15px;color:#666;">Researching</span>
+    </div>
+
+    <div id="error-box" class="card hidden">
+      <div id="error-banner" class="status-banner"></div>
+    </div>
+
+    <div id="result-box" class="card hidden">
+      <div class="result-header">
+        <div>
+          <span class="badge badge-ai">AI Generated</span><br>
+          <span class="result-company" id="r-company"></span>
+          <span class="result-industry" id="r-industry"></span>
+        </div>
+        <span class="badge" id="r-confidence"></span>
+      </div>
+      <div class="result-size" id="r-size"></div>
+
+      <div class="section-label">What they do</div>
+      <p class="section-text" id="r-whattheydo"></p>
+
+      <div class="section-label">Likely pain points</div>
+      <ul class="pain-list" id="r-pains"></ul>
+
+      <div class="section-label">Why it fits</div>
+      <p class="section-text" id="r-whyfit"></p>
+
+      <div class="section-label">Suggested subject line</div>
+      <div class="subject-line" id="r-subject"></div>
+
+      <div id="r-hubspot-badge" class="hidden" style="margin-top:16px;">
+        <span class="badge" style="background:#d1fae5;color:#065f46;">&#10003; Saved to CRM</span>
+      </div>
+    </div>
+
+    </div><!-- end tab-research -->
+
+    <div id="tab-proposal" class="tab-panel">
+
+    <div class="card">
+      <label for="p-apikey">API Key</label>
+      <input id="p-apikey" type="password" value="" autocomplete="off">
+
+      <label for="p-company">Company Name</label>
+      <input id="p-company" type="text" placeholder="e.g. Vercel">
+
+      <p style="font-size:13px;color:#666;margin-bottom:18px;">Run Research first. The company name and research data will be pulled in automatically.</p>
+
+      <button class="btn" id="p-btn">Generate Proposal</button>
+    </div>
+
+    <div id="p-loading" class="card hidden">
+      <span class="loading-dots" style="font-size:15px;color:#666;">Generating proposal</span>
+    </div>
+
+    <div id="p-error-box" class="card hidden">
+      <div id="p-error-banner" class="status-banner"></div>
+    </div>
+
+    <div id="p-result-box" class="card hidden">
+      <span class="badge badge-ai">AI Generated</span>
+
+      <div class="section-label">Pitch Email</div>
+      <div class="proposal-email" id="p-email"></div>
+
+      <div class="section-label">Suggested Newsletters</div>
+      <div class="newsletter-tags" id="p-newsletters"></div>
+
+      <div class="section-label">Talking Points</div>
+      <ul class="pain-list" id="p-talking-points"></ul>
+
+      <div class="section-label">Follow-up Hook</div>
+      <div class="hook-text" id="p-hook"></div>
+    </div>
+
+    </div><!-- end tab-proposal -->
+
+  </div>
+
+  <script>
+    let isLoading = false;
+    document.getElementById('btn')
+      .addEventListener('click', doResearch);
+    document.getElementById('company').addEventListener('keydown', function(e) { if (e.key === 'Enter') doResearch(); });
+    document.getElementById('apikey').addEventListener('keydown', function(e) { if (e.key === 'Enter') doResearch(); });
+
+    async function doResearch() {
+      const btn = document.getElementById("btn");
+      btn.disabled = true;
+
+      if (isLoading) return;
+      isLoading = true;
+
+      const loading = document.getElementById("loading");
+      const errorBox = document.getElementById("error-box");
+      const resultBox = document.getElementById("result-box");
+
+      const apiKey = document.getElementById("apikey").value.trim();
+      const company = document.getElementById("company").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+
+      if (!company) { alert("Please enter a company name."); isLoading = false; btn.disabled = false; return; }
+
+      loading.classList.remove("hidden");
+      errorBox.classList.add("hidden");
+      resultBox.classList.add("hidden");
+
+      try {
+        const res = await fetch("/skill/research", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Api-Key": apiKey },
+          body: JSON.stringify({ company_name: company, notes: notes }),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok && !json.status) {
+          showError("error", json.detail || `HTTP ${res.status}`);
+          return;
+        }
+
+        if (json.status === "ok" && json.data) {
+          showResult(json.data, json.crm_note_id);
+        } else if (json.status === "degraded") {
+          showError("degraded", json.error || "Service degraded");
+        } else {
+          showError("error", json.error || "Unknown error");
+        }
+      } catch (e) {
+        showError("error", "Network error: " + e.message);
+      } finally {
+        isLoading = false;
+        btn.disabled = false;
+        loading.classList.add("hidden");
+      }
+    }
+
+    function showError(level, message) {
+      const errorBox = document.getElementById("error-box");
+      const banner = document.getElementById("error-banner");
+      banner.textContent = message;
+      banner.className = "status-banner " + (level === "degraded" ? "status-degraded" : "status-error");
+      errorBox.classList.remove("hidden");
+    }
+
+    // Store last research result for proposal tab
+    var lastResearchResult = null;
+
+    function showResult(d, crmNoteId) {
+      lastResearchResult = d;
+      // Persist result across page refreshes
+      sessionStorage.setItem('lastResearchResult', JSON.stringify(lastResearchResult));
+      sessionStorage.setItem('lastResearchCompany', document.getElementById('company').value.trim());
+      sessionStorage.setItem('lastResearchApiKey', document.getElementById('apikey').value.trim());
+      document.getElementById("r-company").textContent = d.company_name;
+      document.getElementById("r-industry").textContent = " \u2014 " + d.industry;
+      document.getElementById("r-size").textContent = d.estimated_size;
+      document.getElementById("r-whattheydo").textContent = d.what_they_do;
+      document.getElementById("r-whyfit").textContent = d.why_fits;
+      document.getElementById("r-subject").textContent = d.suggested_subject_line;
+
+      const pains = document.getElementById("r-pains");
+      pains.innerHTML = "";
+      d.likely_pain_points.forEach(function(p) {
+        const li = document.createElement("li");
+        li.textContent = p;
+        pains.appendChild(li);
+      });
+
+      const conf = document.getElementById("r-confidence");
+      conf.textContent = d.confidence;
+      conf.className = "badge badge-" + d.confidence;
+
+      var hsBadge = document.getElementById("r-hubspot-badge");
+      if (crmNoteId) {
+        hsBadge.classList.remove("hidden");
+      } else {
+        hsBadge.classList.add("hidden");
+      }
+
+      document.getElementById("result-box").classList.remove("hidden");
+      document.getElementById("p-company").value = d.company_name;
+      document.getElementById("p-btn").disabled = false;
+    }
+    // --- Tab switching ---
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('tab-' + name).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(function(b) {
+        if (b.textContent.toLowerCase() === name) b.classList.add('active');
+      });
+      sessionStorage.setItem('lastActiveTab', name);
+      if (name === 'proposal' && !document.getElementById('p-apikey').value.trim()) {
+        var researchKey = document.getElementById('apikey').value.trim();
+        if (researchKey) document.getElementById('p-apikey').value = researchKey;
+      }
+    }
+
+    // --- Proposal tab ---
+    var pIsLoading = false;
+    document.getElementById('p-btn').addEventListener('click', doProposal);
+    document.getElementById('p-company').addEventListener('keydown', function(e) { if (e.key === 'Enter') doProposal(); });
+    document.getElementById('p-apikey').addEventListener('keydown', function(e) { if (e.key === 'Enter') doProposal(); });
+    document.getElementById('p-btn').disabled = true;
+
+    async function doProposal() {
+      var btn = document.getElementById("p-btn");
+      btn.disabled = true;
+      if (pIsLoading) return;
+      pIsLoading = true;
+
+      var loading = document.getElementById("p-loading");
+      var errorBox = document.getElementById("p-error-box");
+      var resultBox = document.getElementById("p-result-box");
+
+      var apiKey = document.getElementById("p-apikey").value.trim();
+      var company = document.getElementById("p-company").value.trim();
+
+      if (!company) { alert("Please enter a company name."); pIsLoading = false; btn.disabled = false; return; }
+
+      if (!lastResearchResult) {
+        alert("Please run a Research query first to get prospect data.");
+        pIsLoading = false;
+        btn.disabled = false;
+        return;
+      }
+
+      loading.classList.remove("hidden");
+      errorBox.classList.add("hidden");
+      resultBox.classList.add("hidden");
+
+      try {
+        var res = await fetch("/skill/proposal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Api-Key": apiKey },
+          body: JSON.stringify({ company_name: company, prospect_data: lastResearchResult }),
+        });
+
+        var json = await res.json();
+
+        if (!res.ok && !json.status) {
+          showProposalError("error", json.detail || ("HTTP " + res.status));
+          return;
+        }
+
+        if (json.status === "ok" && json.data) {
+          showProposalResult(json.data);
+        } else if (json.status === "degraded") {
+          showProposalError("degraded", json.error || "Service degraded");
+        } else {
+          showProposalError("error", json.error);
+        }
+      } catch (e) {
+        showProposalError("error", "Network error: " + e.message);
+      } finally {
+        pIsLoading = false;
+        btn.disabled = !lastResearchResult;
+        loading.classList.add("hidden");
+      }
+    }
+
+    function showProposalError(level, message) {
+      var errorBox = document.getElementById("p-error-box");
+      var banner = document.getElementById("p-error-banner");
+      banner.textContent = message;
+      banner.className = "status-banner " + (level === "degraded" ? "status-degraded" : "status-error");
+      errorBox.classList.remove("hidden");
+    }
+
+    function showProposalResult(d) {
+      document.getElementById("p-email").textContent = d.pitch_email_body;
+
+      var tags = document.getElementById("p-newsletters");
+      tags.innerHTML = "";
+      d.suggested_channels.forEach(function(n) {
+        var span = document.createElement("span");
+        span.className = "newsletter-tag";
+        span.textContent = n;
+        tags.appendChild(span);
+      });
+
+      var tp = document.getElementById("p-talking-points");
+      tp.innerHTML = "";
+      d.talking_points.forEach(function(p) {
+        var li = document.createElement("li");
+        li.textContent = p;
+        tp.appendChild(li);
+      });
+
+      document.getElementById("p-hook").textContent = d.follow_up_hook;
+      document.getElementById("p-result-box").classList.remove("hidden");
+      sessionStorage.setItem('lastProposalResult', JSON.stringify(d));
+    }
+
+    // Restore last research result on page load
+    // TODO: Add Playwright E2E tests for sessionStorage persistence when frontend stabilizes
+    const savedResult = sessionStorage.getItem('lastResearchResult');
+    const savedCompany = sessionStorage.getItem('lastResearchCompany');
+    const savedApiKey = sessionStorage.getItem('lastResearchApiKey');
+    const companyEl = document.getElementById('company');
+    const apikeyEl = document.getElementById('apikey');
+    if (savedResult && savedCompany && companyEl) {
+        try {
+            lastResearchResult = JSON.parse(savedResult);
+            companyEl.value = savedCompany;
+            if (savedApiKey && apikeyEl) apikeyEl.value = savedApiKey;
+            showResult(lastResearchResult, null);
+        } catch (e) {
+            sessionStorage.removeItem('lastResearchResult');
+            sessionStorage.removeItem('lastResearchCompany');
+            sessionStorage.removeItem('lastResearchApiKey');
+        }
+    }
+
+    const savedTab = sessionStorage.getItem('lastActiveTab');
+    const savedProposal = sessionStorage.getItem('lastProposalResult');
+    if (savedProposal) {
+        try {
+            showProposalResult(JSON.parse(savedProposal));
+        } catch (e) {
+            sessionStorage.removeItem('lastProposalResult');
+        }
+    }
+    if (savedTab) switchTab(savedTab);
+
+  </script>
+</body>
+</html>
