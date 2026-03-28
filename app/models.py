@@ -55,7 +55,7 @@ class ResearchResponse(BaseModel):
 
 class ProposalData(BaseModel):
     pitch_email_body: str
-    suggested_channels: list[str]
+    recommended_approach: list[str]
     talking_points: list[str]
     follow_up_hook: str
 
