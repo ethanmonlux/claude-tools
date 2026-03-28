@@ -1,10 +1,10 @@
 # Claude Tools
 
-Built as a working demonstration for TLDR's first AI Engineer role. Two Claude Skills — prospect research and proposal generation — deployed on TLDR's stack (FastAPI, Railway), connected via n8n, accessible to non-technical users without code or engineering tickets. It's live at https://tldr-skills-production.up.railway.app.
+Built as a working demonstration for TLDR's first AI Engineer role. Two Claude Skills — prospect research and proposal generation — deployed on TLDR's stack (FastAPI, Railway), connected via n8n, accessible to non-technical users without code or engineering tickets. It's live at https://claude-tools-production.up.railway.app.
 
 ## How to Use
 
-1. Go to https://tldr-skills-production.up.railway.app
+1. Go to https://claude-tools-production.up.railway.app
 2. Enter the API key (get this from your team)
 3. **Research tab** — type a company name (e.g. "Datadog"), optionally add a note, click Research to get a prospect brief
 4. **Proposal tab** — after researching a company, click Generate Proposal to get a ready-to-send pitch email, talking points, and follow-up hook
@@ -17,7 +17,7 @@ Built as a working demonstration for TLDR's first AI Engineer role. Two Claude S
 
 ## Live Demo
 
-Running at: https://tldr-skills-production.up.railway.app
+Running at: https://claude-tools-production.up.railway.app
 
 The UI handles auth automatically. For direct API calls, include the `X-Api-Key` header.
 
