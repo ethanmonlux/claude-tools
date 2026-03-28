@@ -1,0 +1,228 @@
+{
+  "name": "Proposal Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "TLDR Prospect Research",
+        "formDescription": "Enter a company name to generate a prospect brief for the TLDR sales team.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Company Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Notes (optional)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -160,
+        64
+      ],
+      "id": "e64c3795-85b4-4088-a96b-b7c8eb3162fa",
+      "name": "On form submission",
+      "webhookId": "ce0ebbd4-c930-4484-9b33-3eb731ae2953"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Prospect Research').item.json.data;\n\nconst body = {\n  company_name: data.company_name,\n  prospect_data: {\n    company_name: data.company_name,\n    industry: data.industry,\n    estimated_size: data.estimated_size,\n    what_they_do: data.what_they_do,\n    likely_pain_points: data.likely_pain_points,\n    why_tldr_fits: data.why_tldr_fits,\n    suggested_subject_line: data.suggested_subject_line,\n    confidence: data.confidence\n  }\n};\n\nreturn {\n  json: {\n    body: JSON.stringify(body)\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        64
+      ],
+      "id": "11a62f7c-659f-4add-8dc5-70e88a6a637e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tldr-skills-production.up.railway.app/skill/research",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "company_name",
+              "value": "={{ $json['Company Name'] }}"
+            },
+            {
+              "name": "notes",
+              "value": "={{ $json['Notes (optional)'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        48,
+        64
+      ],
+      "id": "36a17810-f655-4583-8c5e-23e3f4f376ca",
+      "name": "Prospect Research",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "O5jz5RgDeCRvYe2B",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tldr-skills-production.up.railway.app/skill/proposal",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        464,
+        64
+      ],
+      "id": "d7c20b5d-13ac-4423-8c9e-fca3b2ce989a",
+      "name": "Proposal Generator",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "O5jz5RgDeCRvYe2B",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=📧 *Full Pitch Email:*  \n\n*Subject:* {{ $('Prospect Research').item.json.data.suggested_subject_line }}\n\n{{ $('Proposal Generator').item.json.data.pitch_email_body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        864,
+        64
+      ],
+      "id": "1f433c2f-0d00-4ca5-bc16-cebcf6714661",
+      "name": "Discord Pitch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=🔍 *Research + Proposal: {{ $('Prospect Research').item.json.data.company_name }}*\n\n📰 *Newsletters:* {{ $('Proposal Generator').item.json.data.suggested_newsletters.join(', ') }}\n\n💬 *Talking Points:*\n- {{ $('Proposal Generator').item.json.data.talking_points[0] }}\n- {{ $('Proposal Generator').item.json.data.talking_points[1] }}\n- {{ $('Proposal Generator').item.json.data.talking_points[2] }}\n\n🪝 *Follow-up Hook:*\n{{ $('Proposal Generator').item.json.data.follow_up_hook }}\n"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        656,
+        64
+      ],
+      "id": "dd4120d2-00c1-4a4a-9f7d-00afaa7d0000",
+      "name": "Discord Research"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Prospect Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Proposal Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospect Research": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Proposal Generator": {
+      "main": [
+        [
+          {
+            "node": "Discord Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Research": {
+      "main": [
+        [
+          {
+            "node": "Discord Pitch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9906fee4-8b49-4d72-822d-f5f620fed126",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "611c4dc8063c5efe91a40f96f628f83e495a51db2e6c0ae17b8e0c41457871b2"
+  },
+  "id": "93Fr9z1cbDylwV8N",
+  "tags": []
+}
