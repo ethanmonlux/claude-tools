@@ -9,8 +9,6 @@ Built as a working demonstration for TLDR's first AI Engineer role. Two Claude S
 3. **Research tab** — type a company name (e.g. "Datadog"), optionally add a note, click Research to get a prospect brief
 4. **Proposal tab** — after researching a company, click Generate Proposal to get a ready-to-send pitch email, talking points, and follow-up hook
 
-**Non-technical workflow (n8n):** A sales rep fills out a form, gets a complete prospect brief posted to Discord — no API key, no code, no engineering ticket. The skill has no idea n8n is calling it. That's composability working in practice.
-
 **Composability:** `company name → [Research Skill] → ProspectSummary → [Proposal Skill] → pitch email`. The output schema of one skill is the exact input schema of the next.
 
 **Tests:** 26 tests — most cover failure modes, not the happy path. Production systems break on edge cases.
