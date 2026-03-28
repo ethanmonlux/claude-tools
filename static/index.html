@@ -154,8 +154,8 @@
       <div class="section-label">Pitch Email</div>
       <div class="proposal-email" id="p-email"></div>
 
-      <div class="section-label">Suggested Newsletters</div>
-      <div class="newsletter-tags" id="p-newsletters"></div>
+      <div class="section-label">Recommended Approach</div>
+      <div class="newsletter-tags" id="p-approach"></div>
 
       <div class="section-label">Talking Points</div>
       <ul class="pain-list" id="p-talking-points"></ul>
@@ -362,9 +362,9 @@
     function showProposalResult(d) {
       document.getElementById("p-email").textContent = d.pitch_email_body;
 
-      var tags = document.getElementById("p-newsletters");
+      var tags = document.getElementById("p-approach");
       tags.innerHTML = "";
-      d.suggested_channels.forEach(function(n) {
+      d.recommended_approach.forEach(function(n) {
         var span = document.createElement("span");
         span.className = "newsletter-tag";
         span.textContent = n;

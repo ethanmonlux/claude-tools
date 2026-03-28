@@ -24,7 +24,7 @@ _VALID_PROSPECT = ProspectSummary(
 
 _VALID_PROPOSAL_JSON = {
     "pitch_email_body": "Hi TestCo team, ...",
-    "suggested_channels": ["developer newsletter", "technical blog", "LinkedIn"],
+    "recommended_approach": ["developer newsletter", "technical blog", "LinkedIn"],
     "talking_points": ["Point 1", "Point 2", "Point 3"],
     "follow_up_hook": "Saw your recent launch — would love to chat.",
 }
@@ -198,7 +198,7 @@ async def test_happy_path_returns_ok_with_data(mock_claude_mode):
     assert response.status == "ok"
     assert response.data is not None
     assert response.data.pitch_email_body is not None
-    assert len(response.data.suggested_channels) > 0
+    assert len(response.data.recommended_approach) > 0
     assert len(response.data.talking_points) > 0
     assert response.data.follow_up_hook is not None
 
