@@ -175,7 +175,3 @@ To add a new data source:
 2. Implement it in `app/connectors/hubspot.py`
 3. Add a fixture return in `app/connectors/mock.py`
 4. Use it in the relevant skill under `app/skills/`
-```
-
-And the `.env.example` file to create in the repo root:
-```
