@@ -179,13 +179,3 @@ To add a new data source:
 
 And the `.env.example` file to create in the repo root:
 ```
-# Required — any string works locally
-SKILL_API_KEY=demo-key
-
-# Set to "live" and add ANTHROPIC_KEY for real Claude calls
-CLAUDE_MODE=mock
-ANTHROPIC_KEY=
-
-# Connector: "mock" uses fixture data, "hubspot" requires HUBSPOT_API_KEY
-CONNECTOR_MODE=mock
-HUBSPOT_API_KEY=
