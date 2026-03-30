@@ -5,7 +5,7 @@ Composable AI skill platform built on FastAPI, Railway, and Anthropic Claude. Tw
 ## How to Use
 
 1. Go to https://claude-tools-production.up.railway.app
-2. Enter the API key (get this from your team)
+2. Enter the API key (demo key available on request, or run locally in mock mode — see below)
 3. **Research tab** — type a company name (e.g. "Datadog"), optionally add a note, click Research to get a prospect brief
 4. **Proposal tab** — after researching a company, click Generate Proposal to get a ready-to-send pitch email, talking points, and follow-up hook
 
@@ -23,17 +23,30 @@ The UI handles auth automatically. For direct API calls, include the `X-Api-Key`
 
 ## Local Development
 
+### No API key required — mock mode
+
+Run fully locally with fixture responses. No Anthropic API key needed.
 ```bash
 cp .env.example .env
-# Add ANTHROPIC_KEY to .env
+# CLAUDE_MODE=mock is set by default — no changes needed
 
 pip install -e .
 uvicorn app.main:app --reload --port 8080
 # Open http://localhost:8080
 ```
 
-## Architecture
+Mock mode returns realistic fixture data for both skills. The full request/response pipeline runs — auth, rate limiting, validation, connector, Pydantic output parsing — everything except the live Claude API call.
 
+### Live mode (requires Anthropic API key)
+```bash
+cp .env.example .env
+# Set CLAUDE_MODE=live and add your ANTHROPIC_KEY to .env
+
+pip install -e .
+uvicorn app.main:app --reload --port 8080
+```
+
+## Architecture
 ```
 User (browser)
     │
@@ -70,9 +83,9 @@ static/index.html          Simple HTML/JS frontend, no framework
 
 **Validated structured output** — Claude's response is parsed and validated with Pydantic before returning. Malformed LLM output surfaces as a clear `status: error` with a human-readable message.
 
-**Operator surface** — `GET /health` shows current mode. The UI clearly labels all output as AI-generated.
+**Mock mode** — Set `CLAUDE_MODE=mock` to run the full pipeline without hitting the Anthropic API. Fixture responses are defined per skill. Used in tests and for local development without credentials.
 
-**Business-specific output** — Every brief includes a `why_fits` field that answers the rep's actual question: why would this company be a good outreach target? Generic research tools return company info. This field returns a pitch angle.
+**Operator surface** — `GET /health` shows current mode. The UI clearly labels all output as AI-generated.
 
 ## API
 
@@ -81,7 +94,6 @@ static/index.html          Simple HTML/JS frontend, no framework
 **Headers:** `X-Api-Key: <SKILL_API_KEY>`
 
 **Request:**
-
 ```json
 {
   "company_name": "Vercel",
@@ -90,7 +102,6 @@ static/index.html          Simple HTML/JS frontend, no framework
 ```
 
 **Response:**
-
 ```json
 {
   "status": "ok",
@@ -113,7 +124,6 @@ static/index.html          Simple HTML/JS frontend, no framework
 **Headers:** `X-Api-Key: <SKILL_API_KEY>`
 
 **Request:**
-
 ```json
 {
   "company_name": "Vercel",
@@ -131,7 +141,6 @@ static/index.html          Simple HTML/JS frontend, no framework
 ```
 
 **Response:**
-
 ```json
 {
   "status": "ok",
@@ -154,7 +163,7 @@ static/index.html          Simple HTML/JS frontend, no framework
 |`ANTHROPIC_MODEL`  |`claude-haiku-4-5-20251001`|Claude model to use |
 |`CONNECTOR_MODE`   |`mock`   |`mock` or `hubspot`            |
 |`HUBSPOT_API_KEY`  |—        |Required when mode is `hubspot`|
-|`CLAUDE_MODE`      |`live`   |`live` or `mock` — mock skips Anthropic API, returns fixture data |
+|`CLAUDE_MODE`      |`mock`   |`live` or `mock` — mock skips Anthropic API, returns fixture data |
 |`RATE_LIMIT_REQUESTS`|`10`   |Max requests per window per API key |
 |`RATE_LIMIT_WINDOW_SECONDS`|`60`|Rate limit window in seconds |
 
@@ -166,3 +175,17 @@ To add a new data source:
 2. Implement it in `app/connectors/hubspot.py`
 3. Add a fixture return in `app/connectors/mock.py`
 4. Use it in the relevant skill under `app/skills/`
+```
+
+And the `.env.example` file to create in the repo root:
+```
+# Required — any string works locally
+SKILL_API_KEY=demo-key
+
+# Set to "live" and add ANTHROPIC_KEY for real Claude calls
+CLAUDE_MODE=mock
+ANTHROPIC_KEY=
+
+# Connector: "mock" uses fixture data, "hubspot" requires HUBSPOT_API_KEY
+CONNECTOR_MODE=mock
+HUBSPOT_API_KEY=
