@@ -92,3 +92,20 @@ Before every commit and push, run:
 
 - `pytest` — all tests must pass
 - `ruff check .` — no lint errors allowed
+
+## Surgical Prompt Rules
+
+- For structural fixes (missing braces, block closures, reordering):
+  ALWAYS read the file first, verify the issue by line number, then fix.
+  Never use find/replace alone for structural changes.
+- For find/replace: always include at least 3-4 lines of context,
+  not just the line being changed. Short matches risk hitting the wrong location.
+- When fixing indentation-sensitive code: reference the function name
+  and approximate line number in addition to the find text.
+- CC must confirm what it found before making the change on any
+  structural fix.
+- Structural fixes (brace balance, block closures) must always be
+  their own prompt — never combined with other changes.
+- Prompts are sometimes run from mobile where code blocks get truncated.
+  Write prompts that are self-contained using function names and line
+  number references rather than relying solely on exact string matching.
